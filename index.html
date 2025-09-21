@@ -1,361 +1,338 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Agri-Bot: Smart Farming Assistant</title>
+    <title>AI-Based Farmer Advisory System - Mind Spark (AI)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Earthy Harmony -->
-    <!-- Application Structure Plan: A top-to-bottom narrative scrolling experience. The structure is designed to tell a story: starting with the project's identity (Hero), defining the problem it solves (The Challenge), detailing the solution (Our Solution via interactive tabs for 'How it Works', 'Features', 'Tech Stack'), quantifying the results (Impact & Benefits with a chart), and establishing credibility (Research). This thematic flow is more intuitive and engaging for a user than a direct slide-to-page conversion, guiding them through the 'why', 'what', 'how', and 'so what' of the project logically. -->
-    <!-- Visualization & Content Choices: 
-        - Report Info: Core concept -> Goal: Organize -> Viz: Interactive Tabs -> Interaction: Click to switch views -> Justification: Breaks down the complex system into digestible parts (process, features, tech) preventing user overload.
-        - Report Info: How the Bot Works -> Goal: Organize -> Viz: HTML/CSS Process Flow Diagram -> Interaction: Hover effects for emphasis -> Justification: Visually simplifies the user journey, making the process intuitive and clear without using complex graphics.
-        - Report Info: Project Benefits (Yield, Efficiency) -> Goal: Compare -> Viz: Bar Chart -> Interaction: Hover for tooltips with details -> Justification: Provides an immediate, quantifiable visual representation of the project's impact, making the benefits tangible. Library: Chart.js on Canvas.
-        - Report Info: Technology Stack -> Goal: Organize -> Viz: Grouped Icon/Text cards -> Interaction: Static -> Justification: Clearly categorizes the technologies used, offering a clean, at-a-glance overview of the architecture.
-        - All choices support the narrative structure and avoid external graphics. -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Agri-Tech Modern (Light Cream, Forest Green, Earthy Brown, Accent Gold) -->
+    <!-- Application Structure Plan: The application follows a narrative, single-page scroll structure mirroring the presentation slides. A sticky navigation bar allows quick access to key sections. The goal is to guide a user (like a hackathon judge) logically through the project's story: from the problem to the solution, technical details, impact, and future vision. This linear flow is intuitive and ensures all key points are presented clearly and sequentially. -->
+    <!-- Visualization & Content Choices:
+    - Problem Section: Goal: Inform. Method: Styled HTML cards with Unicode icons. Interaction: Hover effects. Justification: Clearly segments the core problems for easy digestion.
+    - Solution Workflow: Goal: Organize/Explain. Method: An interactive diagram made with HTML/CSS. Interaction: Clicking on a step in the workflow highlights it and updates a description panel, explaining that part of the process in detail. Justification: This transforms a static list into an engaging, explorable component that clarifies the system's logic. Library: Vanilla JS.
+    - Technical Stack: Goal: Inform. Method: A grid layout with categorized lists. Justification: Presents the tech stack in a clean, organized, and professional manner.
+    - Impact Chart: Goal: Persuade/Compare. Method: A dynamic bar chart using Chart.js. Interaction: Buttons to toggle between two key metrics ('Query Resolution Time' vs. 'Farmer Reach'). Justification: Quantifies the project's value proposition visually, providing a powerful "before and after" comparison. Library: Chart.js.
+    - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #FDFBF5;
-            color: #4A4A4A;
+            background-color: #F8F7F2;
+            /* Light Cream */
+            color: #2C3E50;
+            /* Dark Slate */
         }
         
-        .nav-link {
-            transition: color 0.3s ease;
-        }
-        
-        .nav-link:hover {
-            color: #556B2F;
-        }
-        
-        .active-tab {
-            border-bottom: 2px solid #556B2F;
-            color: #556B2F;
-            font-weight: 600;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
+        .text-shadow {
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
         }
         
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 700px;
+            max-width: 800px;
             margin-left: auto;
             margin-right: auto;
-            height: 300px;
-            max-height: 400px;
+            height: 350px;
+            max-height: 50vh;
         }
         
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 400px;
-            }
+        .workflow-step {
+            border: 2px solid #D1C7B8;
+            /* Muted brown border */
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
         
-        .process-step {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .process-step:hover {
+        .workflow-step:hover,
+        .workflow-step.active {
+            background-color: #274C43;
+            /* Forest Green */
+            color: #FFFFFF;
+            border-color: #274C43;
             transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .next-step-card {
+            border-left-width: 4px;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .next-step-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
     </style>
 </head>
 
-<body class="bg-[#FDFBF5] text-gray-800">
+<body class="antialiased scroll-smooth">
 
     <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-[#556B2F]">
-                MindSpark <span class="text-[#DAA520]">AI</span>
-            </a>
-            <div class="hidden md:flex space-x-8">
-                <a href="#solution" class="nav-link text-gray-600 font-medium">Solution</a>
-                <a href="#impact" class="nav-link text-gray-600 font-medium">Impact</a>
-                <a href="#tech" class="nav-link text-gray-600 font-medium">Technology</a>
-                <a href="#research" class="nav-link text-gray-600 font-medium">Research</a>
-            </div>
-            <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
-                <div id="menu-icon-open" class="w-6 h-6">
-                    <div class="w-6 h-0.5 bg-gray-700 mb-1.5"></div>
-                    <div class="w-6 h-0.5 bg-gray-700 mb-1.5"></div>
-                    <div class="w-6 h-0.5 bg-gray-700"></div>
-                </div>
-                 <div id="menu-icon-close" class="hidden w-6 h-6 text-2xl font-bold">X</div>
-            </button>
-        </nav>
-        <div id="mobile-menu" class="hidden md:hidden bg-white px-6 pb-4">
-            <a href="#solution" class="block py-2 nav-link text-gray-600 font-medium">Solution</a>
-            <a href="#impact" class="block py-2 nav-link text-gray-600 font-medium">Impact</a>
-            <a href="#tech" class="block py-2 nav-link text-gray-600 font-medium">Technology</a>
-            <a href="#research" class="block py-2 nav-link text-gray-600 font-medium">Research</a>
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <h1 class="text-xl font-bold text-[#274C43]">Mind Spark (AI)</h1>
+            <nav class="hidden md:flex space-x-6 text-gray-600">
+                <a href="#problem" class="hover:text-[#274C43]">Problem</a>
+                <a href="#solution" class="hover:text-[#274C43]">Solution</a>
+                <a href="#tech" class="hover:text-[#274C43]">Tech Stack</a>
+                <a href="#impact" class="hover:text-[#274C43]">Impact</a>
+                <a href="#vision" class="hover:text-[#274C43]">Vision</a>
+            </nav>
         </div>
     </header>
 
     <main>
-        <section id="hero" class="py-20 md:py-32">
-            <div class="container mx-auto px-6 text-center">
-                <h1 class="text-4xl md:text-6xl font-bold text-[#556B2F] leading-tight">AI Agri-Bot</h1>
-                <p class="mt-4 text-lg md:text-xl text-[#8B4513] max-w-3xl mx-auto">An AI-Based Farmer Query Support and Advisory System to empower farmers with instant, intelligent, and actionable agricultural advice.</p>
-                <a href="#solution" class="mt-8 inline-block bg-[#556B2F] text-white font-bold py-3 px-8 rounded-full hover:bg-[#4a5d28] transition-colors duration-300">Explore the Solution</a>
+        <!-- Slide 1: Title -->
+        <section id="hero" class="py-20 md:py-28 bg-[#F8F7F2]">
+            <div class="container mx-auto text-center px-6">
+                <h2 class="text-4xl md:text-5xl font-bold text-[#274C43] mb-4 text-shadow">AI-Based Farmer Query Support And Advisory System</h2>
+                <p class="text-lg text-gray-600">Smart India Hackathon 2024 - Problem ID: SIH25076</p>
+                <div class="mt-8 inline-block bg-[#E3B448] text-white font-bold py-2 px-6 rounded-full shadow-lg">
+                    Team: Mind Spark (AI)
+                </div>
             </div>
         </section>
 
-        <section id="challenge" class="py-16 bg-white">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-3xl font-bold text-gray-800">The Challenge for Modern Farmers</h2>
-                <p class="mt-4 text-gray-600 max-w-3xl mx-auto">Farmers often face critical, time-sensitive challenges like crop diseases, pest attacks, and nutrient deficiencies. Access to immediate and accurate expert advice is often limited by language barriers, distance, and the availability of
-                    agricultural officers, leading to potential crop loss and reduced profitability.</p>
-            </div>
-        </section>
-
-        <section id="solution" class="py-16">
+        <!-- Slide 2: The Problem -->
+        <section id="problem" class="py-16 bg-white">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-[#556B2F]">Our Solution: The AI Agri-Bot</h2>
-                    <p class="mt-4 text-[#8B4513] max-w-3xl mx-auto">To address these challenges, we've developed the AI Agri-Bot, an intelligent assistant designed to be a farmer's best companion. This section breaks down how the bot works, its key features, and the powerful technology that drives
-                        it. Explore the tabs below to see the system in action.</p>
+                    <h3 class="text-3xl font-bold text-gray-800">The Knowledge Gap in Indian Agriculture</h3>
+                    <p class="mt-2 text-gray-600 max-w-3xl mx-auto">While technology advances, our farmers often lack immediate access to critical, localized information, hindering their productivity and livelihood. The result is lost yield, wasted resources, and mounting uncertainty.</p>
                 </div>
-
-                <div class="w-full max-w-4xl mx-auto">
-                    <div class="flex justify-center border-b border-gray-300 mb-8">
-                        <button data-tab="how-it-works" class="tab-btn px-6 py-3 text-gray-600 active-tab">How It Works</button>
-                        <button data-tab="features" class="tab-btn px-6 py-3 text-gray-600">Core Features</button>
-                        <button data-tab="tech-stack" class="tab-btn px-6 py-3 text-gray-600">Tech Stack</button>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm border-l-4 border-[#CB997E]">
+                        <h4 class="font-bold text-xl mb-2">Delayed Expertise</h4>
+                        <p class="text-gray-600">Farmers wait for days to get answers from overburdened agricultural officers for urgent issues like pest attacks or crop diseases.</p>
                     </div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm border-l-4 border-[#E3B448]">
+                        <h4 class="font-bold text-xl mb-2">Information Silos</h4>
+                        <p class="text-gray-600">Valuable data on weather, soil health, and market trends is often inaccessible or not tailored to a specific farmer's context.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm border-l-4 border-[#274C43]">
+                        <h4 class="font-bold text-xl mb-2">Language & Literacy Barriers</h4>
+                        <p class="text-gray-600">Complex advisories are difficult to understand, especially for farmers in diverse linguistic regions like Tamil Nadu.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                    <div id="how-it-works" class="tab-content active">
-                        <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-2">
-                            <div class="process-step bg-white p-6 rounded-lg shadow-md text-center w-full md:w-1/4">
-                                <div class="text-4xl text-[#DAA520]">1</div>
-                                <h3 class="font-bold mt-2">Ask a Question</h3>
-                                <p class="text-sm mt-1 text-gray-600">Farmer asks a query via voice or text in their native language (e.g., Malayalam) and can upload an image of a crop.</p>
+        <!-- Slide 3: The Solution -->
+        <section id="solution" class="py-16 bg-[#F8F7F2]">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-gray-800">A Smart, AI-Powered Advisory System</h3>
+                    <p class="mt-2 text-gray-600 max-w-3xl mx-auto">We propose an intelligent system that acts as a farmer's trusted digital advisor. Click on each step to see how it works.</p>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-8 items-start">
+                    <div class="w-full lg:w-1/2 flex flex-col gap-4 text-center">
+                        <div id="step1" class="workflow-step p-4 rounded-lg active">
+                            <h5 class="font-bold">1. Multimodal Query</h5>
+                            <p class="text-sm">Voice, Text, or Image in local language</p>
+                        </div>
+                        <div class="self-center text-3xl text-[#274C43]">↓</div>
+                        <div id="step2" class="workflow-step p-4 rounded-lg">
+                            <h5 class="font-bold">2. AI Brain Analysis</h5>
+                            <p class="text-sm">NLP, Vision Models & Contextual Data</p>
+                        </div>
+                        <div class="self-center text-3xl text-[#274C43]">↓</div>
+                        <div id="step3" class="workflow-step p-4 rounded-lg">
+                            <h5 class="font-bold">3. Confidence Check & Response</h5>
+                            <p class="text-sm">Instant Answer or Smart Escalation</p>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-1/2 p-6 bg-white rounded-lg shadow-lg mt-4 lg:mt-0">
+                        <h4 id="workflow-title" class="text-2xl font-bold mb-2 text-[#274C43]">Multimodal Query</h4>
+                        <p id="workflow-desc" class="text-gray-700 leading-relaxed">A farmer sends a query in the most convenient way possible: by speaking, typing, or sending a photo of a diseased crop directly from their phone. The system is designed to understand local languages, like Tamil, breaking down communication
+                            barriers from the very first step.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Technical Approach -->
+        <section id="tech" class="py-16 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-gray-800">Technical Approach</h3>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Our platform is built on a modern, scalable, and robust technology stack to ensure reliability and performance.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="p-6 bg-gray-50 rounded-lg">
+                        <h4 class="font-bold text-lg text-center mb-3">Frontend</h4>
+                        <ul class="list-disc list-inside text-gray-600">
+                            <li>HTML / CSS</li>
+                            <li>Python (Flask)</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 bg-gray-50 rounded-lg">
+                        <h4 class="font-bold text-lg text-center mb-3">Backend</h4>
+                        <ul class="list-disc list-inside text-gray-600">
+                            <li>Python (Flask / Django)</li>
+                            <li>API Management</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 bg-gray-50 rounded-lg">
+                        <h4 class="font-bold text-lg text-center mb-3">AI/ML Brain</h4>
+                        <ul class="list-disc list-inside text-gray-600">
+                            <li>Fine-tuned LLMs (NLU)</li>
+                            <li>PyTorch/JAX (Vision CNN)</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 bg-gray-50 rounded-lg">
+                        <h4 class="font-bold text-lg text-center mb-3">Database</h4>
+                        <ul class="list-disc list-inside text-gray-600">
+                            <li>PostgreSQL with PostGIS</li>
+                            <li>MongoDB</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 bg-gray-50 rounded-lg">
+                        <h4 class="font-bold text-lg text-center mb-3">Services</h4>
+                        <ul class="list-disc list-inside text-gray-600">
+                            <li>Google Speech-to-Text</li>
+                            <li>Google Text-to-Speech</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 bg-gray-50 rounded-lg">
+                        <h4 class="font-bold text-lg text-center mb-3">Deployment</h4>
+                        <ul class="list-disc list-inside text-gray-600">
+                            <li>Docker</li>
+                            <li>AWS / Google Cloud</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Feasibility & Impact -->
+        <section id="impact" class="py-16 bg-[#F8F7F2]">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-gray-800">Feasibility & Impact</h3>
+                    <p class="mt-2 text-gray-600 max-w-2xl mx-auto">Our solution is not just innovative but also highly viable, socially adoptable, and impactful.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-md">
+                    <div class="grid lg:grid-cols-2 gap-12">
+                        <div>
+                            <h4 class="font-bold text-xl mb-4">Key Impacts</h4>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-start"><span class="text-green-500 mr-2">✔</span> <strong>Democratizes Knowledge:</strong> Makes expert advice instantly accessible to every farmer.</li>
+                                <li class="flex items-start"><span class="text-green-500 mr-2">✔</span> <strong>Improves Livelihoods:</strong> Reduces crop loss and increases profitability with timely, accurate advice.</li>
+                                <li class="flex items-start"><span class="text-green-500 mr-2">✔</span> <strong>Empowers Extension System:</strong> Automates first-level support, allowing Agri Officers to focus on high-impact challenges.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="flex justify-center gap-2 mb-4">
+                                <button id="btn-chart-time" class="bg-[#274C43] text-white py-2 px-4 rounded-lg shadow-md hover:bg-opacity-90 transition text-sm">Query Time</button>
+                                <button id="btn-chart-reach" class="bg-white text-[#274C43] border border-[#274C43] py-2 px-4 rounded-lg shadow-md hover:bg-gray-50 transition text-sm">Farmer Reach</button>
                             </div>
-                            <div class="text-2xl text-[#556B2F] hidden md:block">&rarr;</div>
-                            <div class="text-2xl text-[#556B2F] md:hidden">&darr;</div>
-                            <div class="process-step bg-white p-6 rounded-lg shadow-md text-center w-full md:w-1/4">
-                                <div class="text-4xl text-[#DAA520]">2</div>
-                                <h3 class="font-bold mt-2">AI Analysis</h3>
-                                <p class="text-sm mt-1 text-gray-600">The system analyzes text/voice, image, location, crop type, and local weather for a complete diagnosis.</p>
-                            </div>
-                            <div class="text-2xl text-[#556B2F] hidden md:block">&rarr;</div>
-                            <div class="text-2xl text-[#556B2F] md:hidden">&darr;</div>
-                            <div class="process-step bg-white p-6 rounded-lg shadow-md text-center w-full md:w-1/4">
-                                <div class="text-4xl text-[#DAA520]">3</div>
-                                <h3 class="font-bold mt-2">Get Instant Advice</h3>
-                                <p class="text-sm mt-1 text-gray-600">Farmer receives an immediate, actionable answer from the AI in their native language.</p>
-                            </div>
-                            <div class="text-2xl text-[#556B2F] hidden md:block">&rarr;</div>
-                            <div class="text-2xl text-[#556B2F] md:hidden">&darr;</div>
-                            <div class="process-step bg-white p-6 rounded-lg shadow-md text-center w-full md:w-1/4">
-                                <div class="text-4xl text-[#DAA520]">4</div>
-                                <h3 class="font-bold mt-2">Smart Escalation</h3>
-                                <p class="text-sm mt-1 text-gray-600">If the issue is complex, the query is automatically sent with full context to a local human expert.</p>
+                            <div class="chart-container">
+                                <canvas id="impactChart"></canvas>
                             </div>
                         </div>
                     </div>
-
-                    <div id="features" class="tab-content">
-                        <div class="grid md:grid-cols-3 gap-8">
-                            <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                                <div class="text-4xl mb-4 text-[#556B2F]">🎤</div>
-                                <h3 class="text-xl font-bold mb-2">Instant Multilingual Support</h3>
-                                <p class="text-gray-600">Farmers can ask questions using voice or text in their native language and receive immediate, actionable answers.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                                <div class="text-4xl mb-4 text-[#556B2F]">📸</div>
-                                <h3 class="text-xl font-bold mb-2">Multimodal Analysis</h3>
-                                <p class="text-gray-600">Analyzes uploaded images of diseased crops, considering location and weather data for highly personalized advice.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                                <div class="text-4xl mb-4 text-[#556B2F]">🧑‍🌾</div>
-                                <h3 class="text-xl font-bold mb-2">Smart Escalation System</h3>
-                                <p class="text-gray-600">For complex issues, the query is automatically forwarded to a human expert, ensuring no query goes unanswered.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="tech-stack" class="tab-content">
-                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div class="bg-white p-6 rounded-lg shadow-md">
-                                <h3 class="font-bold text-lg text-[#556B2F]">Frontend</h3>
-                                <p class="text-gray-600 mt-2">HTML, CSS, JavaScript</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg shadow-md">
-                                <h3 class="font-bold text-lg text-[#556B2F]">Backend</h3>
-                                <p class="text-gray-600 mt-2">Python (FastAPI / Django)</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg shadow-md">
-                                <h3 class="font-bold text-lg text-[#556B2F]">AI/ML Engine</h3>
-                                <p class="text-gray-600 mt-2">Fine-tuned LLMs (NLU), PyTorch/ResNet (Vision)</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg shadow-md">
-                                <h3 class="font-bold text-lg text-[#556B2F]">Database</h3>
-                                <p class="text-gray-600 mt-2">PostgreSQL/PostGIS, MongoDB</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg shadow-md">
-                                <h3 class="font-bold text-lg text-[#556B2F]">Speech & Deployment</h3>
-                                <p class="text-gray-600 mt-2">Google Speech-to-Text, Docker, Cloud (AWS/GCP)</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="impact" class="py-16 bg-white">
+        <!-- Slide 6: Vision & Next Steps -->
+        <section id="vision" class="py-16 bg-white">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-800">Project Impact & Benefits</h2>
-                    <p class="mt-4 text-gray-600 max-w-3xl mx-auto">The AI Agri-Bot is more than just a tool; it's a catalyst for change in the agricultural sector. By providing timely, data-driven advice, it directly contributes to improved yields and empowers both farmers and the extension system.
-                        The chart below visualizes the projected improvements.</p>
+                    <h3 class="text-3xl font-bold text-gray-800">Vision & Next Steps</h3>
+                    <p class="mt-2 text-gray-600 max-w-3xl mx-auto">Our vision is to empower every Indian farmer with the power of AI-driven data, fostering sustainability and profitability from the ground up.</p>
                 </div>
-                <div class="chart-container">
-                    <canvas id="benefitsChart"></canvas>
-                </div>
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
-                    <div class="text-center">
-                        <h3 class="font-bold text-lg text-[#556B2F]">Data-Driven Policy</h3>
-                        <p class="text-gray-600 mt-2">Uses real-time farm data to inform agricultural policy making.</p>
+                <div class="max-w-4xl mx-auto">
+                    <div class="space-y-6">
+                        <div class="next-step-card border-[#E3B448] p-4 bg-gray-50 rounded-r-lg">
+                            <h4 class="font-bold text-lg">1. Pilot Program</h4>
+                            <p class="text-gray-600">Launch with a single Agri Department to validate the system and gather localized data for fine-tuning.</p>
+                        </div>
+                        <div class="next-step-card border-[#CB997E] p-4 bg-gray-50 rounded-r-lg">
+                            <h4 class="font-bold text-lg">2. Scale & Expand</h4>
+                            <p class="text-gray-600">Roll out to more regions and incorporate additional languages to increase our reach and impact.</p>
+                        </div>
+                        <div class="next-step-card border-[#274C43] p-4 bg-gray-50 rounded-r-lg">
+                            <h4 class="font-bold text-lg">3. Integrate & Enhance</h4>
+                            <p class="text-gray-600">Integrate with government portals, market price APIs, and advanced weather forecasting to provide holistic, end-to-end support.</p>
+                        </div>
                     </div>
-                    <div class="text-center">
-                        <h3 class="font-bold text-lg text-[#556B2F]">Language Inclusivity</h3>
-                        <p class="text-gray-600 mt-2">Breaks down language barriers by working in local languages.</p>
-                    </div>
-                    <div class="text-center">
-                        <h3 class="font-bold text-lg text-[#556B2F]">Empowered Experts</h3>
-                        <p class="text-gray-600 mt-2">Frees up Krishi Officers to focus on high-impact challenges.</p>
-                    </div>
-                    <div class="text-center">
-                        <h3 class="font-bold text-lg text-[#556B2F]">Sustainability</h3>
-                        <p class="text-gray-600 mt-2">Encourages sustainable practices with precise input advice.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="tech" class="hidden">
-            <!-- This is a dummy section to link the tech-stack tab to nav for smooth scrolling -->
-        </section>
-
-        <section id="research" class="py-16">
-            <div class="container mx-auto px-6">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-[#556B2F]">Research and References</h2>
-                    <p class="mt-4 text-[#8B4513] max-w-3xl mx-auto">This project is built upon a strong foundation of existing academic research in agricultural technology and machine learning. Below are some of the key papers that informed our approach.</p>
-                </div>
-                <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-md space-y-4">
-                    <p class="text-gray-700"><strong>Prajwala, T. R., et al. (2021).</strong> "Krishi-Mitra: A Kannada chatbot for agricultural assistance using deep learning."</p>
-                    <p class="text-gray-700"><strong>Crane-Droesch, A. (2018).</strong> "Machine learning methods for crop yield prediction and climate change impact assessment in agriculture."</p>
-                    <p class="text-gray-700"><strong>Sharma, A., et al. (2020).</strong> "A survey on applications of artificial intelligence and machine learning in agriculture."</p>
-                    <p class="text-gray-700"><strong>Kamilaris, A., & Prenafeta-Boldú, F. X. (2018).</strong> "Deep learning in agriculture: A survey."</p>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="bg-gray-800 text-white py-8">
-        <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2024 MindSpark (AI) Team - Smart India Hackathon Project</p>
-            <p class="text-sm text-gray-400 mt-2">Problem Statement ID: SIH25076</p>
+    <footer class="bg-[#2C3E50] text-white py-6">
+        <div class="container mx-auto text-center px-6">
+            <p class="font-bold">Mind Spark (AI) - Smart India Hackathon 2024</p>
         </div>
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabs = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
+        document.addEventListener('DOMContentLoaded', () => {
+            const workflowSteps = document.querySelectorAll('.workflow-step');
+            const workflowTitle = document.getElementById('workflow-title');
+            const workflowDesc = document.getElementById('workflow-desc');
 
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const target = tab.getAttribute('data-tab');
-
-                    tabs.forEach(t => t.classList.remove('active-tab'));
-                    tab.classList.add('active-tab');
-
-                    tabContents.forEach(content => {
-                        content.classList.remove('active');
-                        if (content.id === target) {
-                            content.classList.add('active');
-                        }
-                    });
-
-                    if (target === 'tech-stack') {
-                        document.getElementById('tech').scrollIntoView({
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
-
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const menuIconOpen = document.getElementById('menu-icon-open');
-            const menuIconClose = document.getElementById('menu-icon-close');
-
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-                menuIconOpen.classList.toggle('hidden');
-                menuIconClose.classList.toggle('hidden');
-            });
-
-            const navLinks = document.querySelectorAll('#mobile-menu a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenu.classList.add('hidden');
-                    menuIconOpen.classList.remove('hidden');
-                    menuIconClose.classList.add('hidden');
-                });
-            });
-
-
-            const ctx = document.getElementById('benefitsChart').getContext('2d');
-            const benefitsChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Improved Crop Yield', 'Reduced Expert Response Time', 'Increased Farmer Profitability', 'System Efficiency'],
-                    datasets: [{
-                        label: 'Projected Improvement (%)',
-                        data: [25, 80, 20, 75],
-                        backgroundColor: [
-                            'rgba(85, 107, 47, 0.7)',
-                            'rgba(218, 165, 32, 0.7)',
-                            'rgba(139, 69, 19, 0.7)',
-                            'rgba(170, 170, 170, 0.7)'
-                        ],
-                        borderColor: [
-                            '#556B2F',
-                            '#DAA520',
-                            '#8B4513',
-                            '#AAAAAA'
-                        ],
-                        borderWidth: 1
-                    }]
+            const workflowContent = {
+                step1: {
+                    title: "1. Multimodal Query",
+                    desc: "A farmer sends a query in the most convenient way possible: by speaking, typing, or sending a photo of a diseased crop directly from their phone. The system is designed to understand local languages, like Tamil, breaking down communication barriers from the very first step."
                 },
+                step2: {
+                    title: "2. AI Brain Analysis",
+                    desc: "The system's core processes the query. It uses Natural Language Processing (NLP) and Vision models to understand the request, then enriches it with contextual data like the farmer's location, local weather, crop type, and soil conditions to ensure the advice is highly relevant."
+                },
+                step3: {
+                    title: "3. Confidence Check & Response",
+                    desc: "If the AI is highly confident in its analysis, it generates an immediate, actionable response. If the query is complex or ambiguous, it is automatically escalated to an Agri Officer's dashboard with the full context, allowing for a quick and informed expert review."
+                }
+            };
+
+            workflowSteps.forEach(step => {
+                step.addEventListener('click', () => {
+                    workflowSteps.forEach(s => s.classList.remove('active'));
+                    step.classList.add('active');
+                    const content = workflowContent[step.id];
+                    workflowTitle.textContent = content.title;
+                    workflowDesc.textContent = content.desc;
+                });
+            });
+
+            // Chart.js implementation
+            const chartTimeData = {
+                labels: ['Traditional Methods', 'Our AI System'],
+                datasets: [{
+                    label: 'Average Query Resolution Time',
+                    data: [48, 0.1], // 48 hours vs 6 minutes
+                    backgroundColor: ['#CB997E', '#274C43'],
+                }]
+            };
+
+            const chartReachData = {
+                labels: ['Traditional Reach', 'Our AI System'],
+                datasets: [{
+                    label: 'Direct Access to Expert Advice',
+                    data: [15, 90], // 15% vs 90%
+                    backgroundColor: ['#E3B448', '#274C43'],
+                }]
+            };
+
+            const chartConfig = {
+                type: 'bar',
+                data: chartTimeData,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%'
-                                }
+                            title: {
+                                display: true,
+                                text: 'Time in Hours'
                             }
                         }
                     },
@@ -365,31 +342,44 @@
                         },
                         title: {
                             display: true,
-                            text: 'Key Performance Improvements',
+                            text: 'Drastic Reduction in Farmer Wait Time',
                             font: {
-                                size: 18
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed.y !== null) {
-                                        label += context.parsed.y + '%';
-                                    }
-                                    return label;
-                                }
+                                size: 16
                             }
                         }
                     }
                 }
+            };
+
+            const ctx = document.getElementById('impactChart').getContext('2d');
+            let impactChart = new Chart(ctx, chartConfig);
+
+            const btnTime = document.getElementById('btn-chart-time');
+            const btnReach = document.getElementById('btn-chart-reach');
+
+            btnTime.addEventListener('click', () => {
+                impactChart.data = chartTimeData;
+                impactChart.options.plugins.title.text = 'Drastic Reduction in Farmer Wait Time';
+                impactChart.options.scales.y.title.text = 'Time in Hours';
+                impactChart.update();
+                btnTime.classList.add('bg-[#274C43]', 'text-white');
+                btnTime.classList.remove('bg-white', 'text-[#274C43]', 'border');
+                btnReach.classList.add('bg-white', 'text-[#274C43]', 'border');
+                btnReach.classList.remove('bg-[#274C43]', 'text-white');
+            });
+
+            btnReach.addEventListener('click', () => {
+                impactChart.data = chartReachData;
+                impactChart.options.plugins.title.text = 'Expanding Farmer Access to Expertise';
+                impactChart.options.scales.y.title.text = '% of Farmers Reached';
+                impactChart.update();
+                btnReach.classList.add('bg-[#274C43]', 'text-white');
+                btnReach.classList.remove('bg-white', 'text-[#274C43]', 'border');
+                btnTime.classList.add('bg-white', 'text-[#274C43]', 'border');
+                btnTime.classList.remove('bg-[#274C43]', 'text-white');
             });
         });
     </script>
-
 </body>
 
 </html>
